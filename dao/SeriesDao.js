@@ -10,7 +10,7 @@ const {
 const SQL_SERIES_INSERT = "INSERT INTO series(name, english_name, description) VALUES(?, ?, ?)";
 module.exports.create = async ({name, englishName, description}) => {
     const result = await pool.queryParam_Parse(SQL_SERIES_INSERT, [name, englishName, description]);
-    return result.affectedRows;
+    return result.insertId;
 }
 
 

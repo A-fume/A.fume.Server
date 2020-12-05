@@ -19,7 +19,7 @@ describe('# seriesDao Test', () => {
         // 성공 케이스
         it(' # success case', (done) => {
             seriesDao.create({name : '테스트 데이터', englishName : 'Test Data', description : '왈라왈라'}).then((result) => {
-                expect(result).eq(1);
+                expect(result).gt(0);
                 done();
             }).catch((err) => {
                 expect(false).true();
@@ -29,7 +29,6 @@ describe('# seriesDao Test', () => {
         // 중복 데이터 발생 케이스
         it(' # DuplicatedEntryError case', (done) => {
             seriesDao.create({name : '테스트 데이터', englishName : 'Test Data', description : '왈라왈라'}).then((result) => {
-                console.log(result)
                 expect(false).true();
                 done();
             }).catch((err) => {
