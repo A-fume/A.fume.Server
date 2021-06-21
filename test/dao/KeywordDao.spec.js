@@ -59,7 +59,7 @@ describe('# KeywordDao Test', () => {
 describe('# readPerfumeKeywordCount Test', () => {
     it('# success case', (done) => {
         keywordDao
-            .readPerfumeKeywordCount({perfumeIdx: 1, keywordIdx: 1})
+            .readPerfumeKeywordCount({ perfumeIdx: 1, keywordIdx: 1 })
             .then((result) => {
                 expect(result.count).eq(1);
                 done();

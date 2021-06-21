@@ -108,7 +108,7 @@ module.exports.readAll = (pagingIndex = 1, pagingSize = 10) => {
  * @param {number} [perfumeIdx = -1]
  * @returns {Promise<Keyword[]>} keywordList
  */
- module.exports.readAllOfPerfume = async (
+module.exports.readAllOfPerfume = async (
     perfumeIdx,
     sort = [['count', 'desc']],
     condition = { [Op.gte]: 3 },
@@ -231,3 +231,23 @@ module.exports.readAllOfPerfumeIdxList = async (
 
     return result;
 };
+
+module.exports.readAllOfReview = async(reviewIdx) => {
+    const keywordList = await JoinReviewKeyword.findAll({
+        where: { reviewIdx },
+        attributes: {
+            exclude: ['createdAt', 'updatedAt'],
+        },
+        include: [
+            {
+                model: Keyword,
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt'],
+                },
+            },
+        ],
+        raw: true,
+        nest: true,
+    });
+    return keywordList ? keywordList : []
+}

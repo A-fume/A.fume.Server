@@ -2,5 +2,5 @@
 npm install;
 npm audit fix;
 npm test;
-pm2 reload ecosystem.json;
+pm2 restart ecosystem.json;
 echo $?

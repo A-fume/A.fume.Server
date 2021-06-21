@@ -89,6 +89,14 @@ const defaultOption = {
     nest: true,
 };
 
+function compactVolumeAndPrice(volumeAndPrice) {
+    return Object.entries(volumeAndPrice)
+        .map(([key, value]) => {
+            return `${key}/${value}`;
+        })
+        .join(',');
+}
+
 /**
  * 향수 추가
  *
@@ -104,7 +112,7 @@ module.exports.create = ({
     story,
     abundanceRate,
 }) => {
-    volumeAndPrice = JSON.stringify(volumeAndPrice);
+    volumeAndPrice = compactVolumeAndPrice(volumeAndPrice);
     return sequelize
         .transaction(async (t) => {
             const { dataValues: perfumeResult } = await Perfume.create(
@@ -296,11 +304,13 @@ module.exports.readByPerfumeIdx = async (perfumeIdx) => {
     if (!perfume) {
         throw new NotMatchedError();
     }
-    perfume.PerfumeDetail.volumeAndPrice = Object.entries(
-        JSON.parse(perfume.PerfumeDetail.volumeAndPrice)
-    ).map(([volume, price]) => {
-        return { volume: parseInt(volume), price: parseInt(price) };
-    });
+    perfume.PerfumeDetail.volumeAndPrice = perfume.PerfumeDetail.volumeAndPrice
+        .split(',')
+        .filter((str) => str.length > 0)
+        .map((str) => {
+            const [volume, price] = str.split('/');
+            return { volume: parseInt(volume), price: parseInt(price) };
+        });
     return perfume;
 };
 
@@ -467,6 +477,7 @@ module.exports.update = async ({
     story,
     abundanceRate,
 }) => {
+    volumeAndPrice = compactVolumeAndPrice(volumeAndPrice);
     const result = await sequelize.transaction(async (t) => {
         const [perfumeAffectedRows] = await Perfume.update(
             {

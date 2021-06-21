@@ -1,6 +1,7 @@
 'use strict';
 
 const reviewDao = require('../dao/ReviewDao.js');
+const perfumeDao = require('../dao/PerfumeDao')
 const keywordDao = require('../dao/KeywordDao');
 const {
     NotMatchedError,
@@ -26,6 +27,7 @@ exports.postReview = async ({
     content,
     keywordList,
 }) => {
+    await perfumeDao.readByPerfumeIdx(perfumeIdx);
     const createReview = await reviewDao.create({
         perfumeIdx,
         userIdx,
@@ -166,13 +168,54 @@ exports.getReviewOfUser = async (userIdx) => {
 
 /**
  * 전체 시향노트 반환(인기순)
- * 특정 향수에 달린 전체 시향노트 별점순으로 가져오기
+ * 특정 향수에 달린 전체 시향노트 인기순으로 가져오기
  *
  * perfumeIdx Long 향수 Idx
  * returns List
  **/
-exports.getReviewOfPerfumeByLike = (perfumeIdx) => {
-    return reviewDao.readAllOrderByLike(perfumeIdx);
+exports.getReviewOfPerfumeByLike = async (perfumeIdx) => {
+    const reviewList = await reviewDao.readAllOfPerfume(perfumeIdx);
+    // console.log(reviewList)
+    await reviewList.reduce(async(prevPromise, it) => {
+        await prevPromise
+        return {
+            reviewIdx: it.reviewIdx,
+            score: it.score,
+            longevity: it.longevity,
+            sillage: it.sillage,
+            seasonal: it.seasonal,
+            gender: it.gender,
+            access: it.access,
+            content: it.content,
+            likeCount: it.LikeReview.likeCount,
+            userGender: it.User.gender,
+            age: it.User.birth,
+            nickname: it.User.nickname,
+            createTime: it.createTime,
+            keywordList : await keywordDao.readAllOfReview(it.reviewIdx)
+        }
+    }, Promise.resolve())   
+    // const reviewListWithKeyword = await Promise.all(reviewList.map(async(it) => {
+    //     const keywordList = await keywordDao.readAllOfReview(it.reviewIdx)
+    //     return {
+    //         reviewIdx: it.reviewIdx,
+    //         score: it.score,
+    //         longevity: it.longevity,
+    //         sillage: it.sillage,
+    //         seasonal: it.seasonal,
+    //         gender: it.gender,
+    //         access: it.access,
+    //         content: it.content,
+    //         likeCount: it.LikeReview.likeCount,
+    //         userGender: it.User.gender,
+    //         age: it.User.birth,
+    //         nickname: it.User.nickname,
+    //         createTime: it.createTime,
+    //         keywordList
+    //     }
+    // }));
+    // console.log(reviewListWithKeyword)
+    return reviewList
 };
 
 /**

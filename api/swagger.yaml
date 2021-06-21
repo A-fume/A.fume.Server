@@ -1628,15 +1628,15 @@ paths:
         required: true
         type: integer
         format: int64
-      - name: sort
-        in: query
-        type: string
-        enum:
-        - likeCount_asc
-        - score_asc
-        - likeCount_desc
-        - score_desc
-        required: false
+      # - name: sort
+      #   in: query
+      #   type: string
+      #   enum:
+      #   - likeCount_asc
+      #   - score_asc
+      #   - likeCount_desc
+      #   - score_desc
+      #   required: false
       - name: pagingSize
         in: query
         type: integer
@@ -2273,18 +2273,24 @@ paths:
                 type: string
                 example: Filter Series 리스트 조회 성공
               data:
-                type: array
-                items:
-                  allOf:
-                  - $ref: '#/definitions/SeriesInfo'
-                  - type: object
-                    properties: 
-                      ingredients:
-                        type: array
-                        items: 
-                          $ref: '#/definitions/IngredientInfo'
-                    example:
-                      ingredients: []
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 1
+                  rows:
+                    type: array
+                    items:
+                      allOf:
+                      - $ref: '#/definitions/SeriesInfo'
+                      - type: object
+                        properties: 
+                          ingredients:
+                            type: array
+                            items: 
+                              $ref: '#/definitions/IngredientInfo'
+                        example:
+                          ingredients: []
       x-swagger-router-controller: Series
   /filter/brand:
     get:

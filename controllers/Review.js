@@ -51,7 +51,7 @@ module.exports.getReviewByIdx = function getReviewByIdx(req, res, next) {
         .catch((err) => next(err));
 };
 
-module.exports.getReviewOfPerfumeByLike = function getReviewOfPerfumeByLike(
+module.exports.getPerfumeReview = function getPerfumeReview(
     req,
     res,
     next
@@ -67,21 +67,21 @@ module.exports.getReviewOfPerfumeByLike = function getReviewOfPerfumeByLike(
         .catch((err) => next(err));
 };
 
-module.exports.getReviewOfPerfumeByScore = function getReviewOfPerfumeByScore(
-    req,
-    res,
-    next
-) {
-    var perfumeIdx = req.swagger.params['perfumeIdx'].value;
-    Review.getReviewOfPerfumeByScore(perfumeIdx)
-        .then((response) => {
-            res.status(OK).json({
-                message: '특정 향수의 시향노트 목록 별점순 조회 성공',
-                data: response,
-            });
-        })
-        .catch((err) => next(err));
-};
+// module.exports.getReviewOfPerfumeByScore = function getReviewOfPerfumeByScore(
+//     req,
+//     res,
+//     next
+// ) {
+//     var perfumeIdx = req.swagger.params['perfumeIdx'].value;
+//     Review.getReviewOfPerfumeByScore(perfumeIdx)
+//         .then((response) => {
+//             res.status(OK).json({
+//                 message: '특정 향수의 시향노트 목록 별점순 조회 성공',
+//                 data: response,
+//             });
+//         })
+//         .catch((err) => next(err));
+// };
 
 module.exports.getReviewOfUser = function getReviewOfUser(req, res, next) {
     const userIdx = req.middlewareToken.loginUserIdx;

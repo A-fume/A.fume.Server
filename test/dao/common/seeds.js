@@ -63,7 +63,7 @@ module.exports = () => {
             Ingredient.upsert({
                 ingredientIdx: i,
                 name: `재료${i}`,
-                seriesIdx: 1,
+                seriesIdx: i,
                 englishName: 'ingredient english-name',
                 description: '재료 설명 텍스트',
             }),
@@ -84,7 +84,7 @@ module.exports = () => {
                 perfumeIdx: i,
                 story: `스토리${i}`,
                 abundanceRate: 1,
-                volumeAndPrice: '{"30":"95000","100":"190000"}',
+                volumeAndPrice: '30/95000,100/190000',
             }),
             LikePerfume.upsert({ userIdx: 1, perfumeIdx: i }),
             SearchHistory.upsert({ userIdx: i, perfumeIdx: i }),

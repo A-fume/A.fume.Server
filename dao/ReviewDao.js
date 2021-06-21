@@ -6,6 +6,7 @@ const {
     Perfume,
     Brand,
     User,
+    LikeReview,
     JoinReviewKeyword,
     JoinPerfumeKeyword,
     Keyword,
@@ -170,17 +171,17 @@ SQL_READ_ALL_OF_PERFUME = `
     u.birth as "User.birth", 
     u.grade as "User.grade", 
     u.access_time as "User.accessTime",
-    count(lr.review_idx) as "LikeReview.likeCount"
+    IF( likeCount IS NULL, 0, likeCount) as "LikeReview.likeCount"
     FROM reviews r
     join users u on u.user_idx = r.user_idx 
-    left outer join like_reviews lr on r.id = lr.review_idx 
-    where perfume_idx = $1
-    group by lr.review_idx 
+    left outer join (SELECT review_idx, COUNT(review_idx) as likeCount FROM like_reviews Group By review_idx) AS lr on r.id = lr.review_idx    
+    where r.perfume_idx = $1
     order by "LikeReview.likeCount" desc;`;
 
 module.exports.readAllOfPerfume = async (perfumeIdx) => {
     let reviewList = await sequelize.query(SQL_READ_ALL_OF_PERFUME, {
         bind: [perfumeIdx],
+        // order: [["likeCount", 'desc']],
         nest: true,
         raw: true,
         model: Review,
@@ -201,9 +202,9 @@ module.exports.readAllOfPerfume = async (perfumeIdx) => {
     //         },
     //         {
     //             model: LikeReview,
-    //             as: 'LikeReview',
-    //             //attributes: [sequelize.literal('(SELECT COUNT(*) FROM like_reviews WHERE like_reviews.review_idx = Review.id)'), 'likeCount']
-    //             attributes:[[sequelize.fn('count', 'reviewIdx'), 'likeCount']],
+    //             as: 'ReviewLike',
+    //             attributes: [sequelize.literal('(SELECT COUNT(*) FROM like_reviews WHERE like_reviews.review_idx = Review.id)'), 'likeCount']
+    //             // attributes:[[sequelize.fn('count', 'reviewIdx'), 'likeCount']],
     //         }
     //     ],
     //     order: [[sequelize.literal('"likeCount"'), 'DESC']],
