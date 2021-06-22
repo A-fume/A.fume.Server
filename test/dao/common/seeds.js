@@ -21,6 +21,9 @@ const {
 const { GENDER_MAN, GENDER_WOMAN } = require('../../../utils/code');
 
 module.exports = () => {
+    if (process.env.NODE_ENV != 'test') {
+        throw Error('Only Allow NODE_ENV = test');
+    }
     const firstJob = [];
     for (let i = 1; i <= 5; i++) {
         firstJob.push(
