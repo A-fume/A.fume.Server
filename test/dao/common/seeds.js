@@ -3,6 +3,7 @@ const {
     Series,
     Perfume,
     PerfumeDetail,
+    PerfumeDefaultReview,
     User,
     Note,
     LikePerfume,
@@ -102,6 +103,14 @@ module.exports = () => {
                 access: 1,
                 content: `시향노트${i}`,
                 likeCnt: 5,
+            }),
+            PerfumeDefaultReview.upsert({
+                perfumeIdx: i,
+                rating: i + 0.95,
+                seasonal: '4/3/2/1',
+                gender: '0/1/2',
+                sillage: '1/2/3',
+                longevity: '1/2/3/4/5',
             })
         );
     }
